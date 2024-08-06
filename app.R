@@ -4,14 +4,14 @@ library(g3viz)
 library(dplyr)
 
 # Load the dataset
-test <- read.csv("test.csv")
+test <- read.table("Shiny App/test.csv", sep = "\t", header = TRUE)
 
 # Replace NA values in the 'disease' column with the string "NA"
 test$disease[is.na(test$disease)] <- "NA"
 
 # Extract amino acid position from the 'Protein_Change' column
-mutation.dat <- test %>%
-  mutate(AA_Position = as.numeric(gsub("p\\.[A-Z](\\d+)[A-Z]", "\\1", Protein_Change)))
+test$AA_Position <- as.numeric(gsub("p\\.[A-Z](\\d+)[A-Z]", "\\1", test$Protein_Change))
+mutation.dat <- test
 
 # Define the user interface
 ui <- fluidPage(
@@ -73,7 +73,7 @@ server <- function(input, output, session) {
     if ("All" %in% input$disease) {
       mutation.dat
     } else {
-      mutation.dat %>% filter(disease %in% input$disease)
+      mutation.dat[mutation.dat$disease %in% input$disease, ]
     }
   })
   
@@ -122,3 +122,12 @@ server <- function(input, output, session) {
 
 # Run the Shiny app
 shinyApp(ui = ui, server = server)
+
+
+
+## Load the shinylive package
+library(shinylive)
+
+# Export the Shiny app using absolute paths
+shinylive::export(appdir = file.path("Shiny App"),
+                  destdir = "docs")

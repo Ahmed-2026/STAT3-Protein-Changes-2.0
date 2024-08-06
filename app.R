@@ -123,11 +123,11 @@ server <- function(input, output, session) {
 # Run the Shiny app
 shinyApp(ui = ui, server = server)
 
-
-
-## Load the shinylive package
+# Load the shinylive package
 library(shinylive)
-
+    
 # Export the Shiny app using absolute paths
 shinylive::export(appdir = file.path("Shiny App"),
                   destdir = "docs")
+
+
